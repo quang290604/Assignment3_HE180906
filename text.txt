@@ -1,0 +1,42 @@
+Use the provided collections/data: students, subjects, classes, and attendances.
+    - A class references a subject through the subjectId fieId.
+    - A class contains an enrollments array. Each enrollment entry includes studentId and status (ENROLLED or DROPPED)
+    - An attendance record references a student through studentId and a class through classId. It also contains date and status (PRESENT or ABSENT).
+    - Use MongoDB ObjectId values for references between documents.
+1. Login and JWT authentication
+Use the test account information and JWT configuration already provided in the project. You are not required to implement user registration.
+1.1 Login
+Implement the following endpoint:
+POST /api/auth/login
+Request body:
+    {
+        "email": "masv@fpt.edu.vn",
+        "password": "masv@123"
+    }
+Requirements:
+    - Validate the email and password using the authentication mechanism/test account configured in the project.
+    - If either field is missing or the login credentials are incorrect, return HTTP 401.
+    - If login is successful, generate a JWT using the pre-installed jsonwebtoken package.
+    - The JWT payload must contain the user's identification information, at least studentId.
+    - Set the token expiration time to 1 hour.
+    - Return the token in the JSON response.
+Example successful response:
+    {
+        "message": "Login successful",
+        "token": "<JWT_TOKEN>"
+    }
+1.2 Implement JWT Authentication Middleware
+Implement the verifyToken middleware with the following requirements:
+    - Extract the token from the request's Authorization header.
+    - The token must follow this format: Bearer <token>.
+    - Use the JWT_SECRET already configuredin the project to verify the token.
+    - If the token is missing, invalid, or expired, return HTTP 401 and deny access to the API.
+    - If the token is valid, store the decoded payload in req.user and call next() to proceed to the next middleware/controller.
+1.3 Protect the APIs
+Apply the verifyToken middleware to protect all the following endpoints:
+    - GET /api/classes/:classId/students
+    - GET /api/classes/:classId/attendance-summary.
+    - GET /api/students/:studentId/attendances
+The client must send the JWT in the request header:
+    Authorization: Bearer <JWT_TOKEN>
+Request without a valid JWT must be reject with HTTP 401.

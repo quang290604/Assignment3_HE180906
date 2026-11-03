@@ -1,0 +1,13 @@
+const mongoose = require('mongoose');
+
+const classSchema = new mongoose.Schema({
+  className: { type: String, required: true },
+  enrollments: [
+    {
+      studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+      status: { type: String }
+    }
+  ]
+});
+
+module.exports = mongoose.model('Class', classSchema, 'classes');
